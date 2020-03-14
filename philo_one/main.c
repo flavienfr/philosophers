@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/14 17:13:09 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/14 19:52:58 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,40 +22,45 @@
 
 int count[3] = {0, 0, 0 };
 
+t_fork	*select_fork(t_fork *fork, int num)
+{
+	int i;
+
+	i = -1;
+	while (++i < num)
+		fork = fork->next;
+	return (fork);
+}
+
 void	*routine(void *arg)
 {
 	t_phi	*phi;
 	t_inf	*inf;
+	t_fork	*fork_1;
+	t_fork	*fork_2;
 
 	phi = arg;
 	inf = phi->inf;
-
-	/*pthread_mutex_lock(&inf->mtx);
-	printf ("je suis phi=%d\n", phi->num);
-	printf ("fork right=%d\n", phi->num);
-	printf ("fork left=%d\n\n", (phi->num + 1) % inf->nb_phi);
-	pthread_mutex_unlock(&inf->mtx);*/	
+	fork_1 = select_fork(inf->fork_1, phi->num);
+	fork_2 = select_fork(inf->fork_1, (phi->num + 1) % inf->nb_phi);
+	//printf("is=%d\n", inf->fork_1->is_fork);
 	while (1)
 	{
 		pthread_mutex_lock(&inf->mtx);
-		if (inf->forks[phi->num] && inf->forks[(phi->num + 1) % inf->nb_phi])
-		{
 			printf ("phi=%d EAT\n", phi->num);
+			//count[phi->num]++;
+			pthread_mutex_lock(&fork_1->mtx);
+				//fork_1->is_fork = 0;
+			pthread_mutex_lock(&fork_2->mtx);
+				//fork_2->is_fork = 0;
 			count[phi->num]++;
-			inf->forks[phi->num] = 0;
-			inf->forks[(phi->num + 1) %inf->nb_phi] = 0;
-			pthread_mutex_unlock(&inf->mtx);
-			//lst_eat = clock
-			usleep(inf->ms_eat);
-			inf->forks[phi->num] = 1;
-			inf->forks[(phi->num + 1) %inf->nb_phi] = 1;
-			usleep(inf->ms_slp);
-			pthread_mutex_lock(&inf->mtx);
-			printf("0=%d 1=%d 3=%d\n", count[0], count[1], count[2]);
-			pthread_mutex_unlock(&inf->mtx);
-		}
-		else
-			pthread_mutex_unlock(&inf->mtx);
+		pthread_mutex_unlock(&inf->mtx);
+		//lst_eat = clock
+		usleep(inf->ms_eat);
+		pthread_mutex_unlock(&fork_1->mtx);
+		pthread_mutex_unlock(&fork_2->mtx);
+		usleep(inf->ms_slp);
+		printf("0=%d 1=%d 3=%d\n", count[0], count[1], count[2]);
 	}
 	return (NULL);
 }
@@ -67,15 +72,32 @@ int		free_all(t_inf *inf, int ret)
 	return (ret);
 }
 
-int		create_fork(t_inf *inf)//remettre struct 
+t_fork	*new_fork(void)
 {
-	int	i;
+	t_fork *fork;
 
-	if (!(inf->forks = malloc(sizeof(int) * inf->nb_phi)))
-		return (1);
-	i = -1;
+	if (!(fork = malloc(sizeof(*fork))))
+		return (NULL);
+	fork->is_fork = 1;
+	fork->mtx = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	fork->next = NULL;
+	return (fork);
+}
+
+int		create_fork(t_inf *inf)
+{
+	t_fork	*cur;
+	int		i;
+
+	i = 0;
+	inf->fork_1 = new_fork();
+	cur = inf->fork_1;
 	while (++i < inf->nb_phi)
-		inf->forks[i] = 1;
+	{
+		if (!(cur->next = new_fork()))
+			return (1);
+		cur = cur->next;
+	}
 	return (0);
 }
 
@@ -154,6 +176,14 @@ int		main(int ac, char **av)
 		return (free_all(&inf, EXIT_FAILURE));
 	return (launch_phi(&inf));
 }
+
+	
+/*test phi  2 fork
+	pthread_mutex_lock(&inf->mtx);
+	printf ("je suis phi=%d\n", phi->num);
+	printf ("fork right=%d\n", phi->num);
+	printf ("fork left=%d\n\n", (phi->num + 1) % inf->nb_phi);
+	pthread_mutex_unlock(&inf->mtx);*/
 
 /*time
 	struct timeval	tv;

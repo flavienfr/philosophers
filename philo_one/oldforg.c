@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   oldforg.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/12 17:24:10 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/14 18:05:20 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 **	struct timeval 
 **	{
 **	    time_t      tv_sec;		secondes 
-**	    suseconds_t tv_usec;	microsecondes 
+**	    suseconds_t tv_usec;	microsecondes
 **	};
 */
 
@@ -50,7 +50,7 @@ int		free_all(t_inf *inf, int ret)
 	return (ret);
 }
 
-/*t_fork	*new_fork(void)
+t_fork	*new_fork(void)
 {
 	t_fork *fork;
 
@@ -60,7 +60,7 @@ int		free_all(t_inf *inf, int ret)
 	fork->mutex = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	fork->next = NULL;
 	return (fork);
-}*/
+}
 
 int		create_fork(t_inf *inf)
 {
@@ -128,3 +128,34 @@ int		main(int ac, char **av)
 	
 	return (EXIT_SUCCESS);
 }
+
+pthread_mutex_lock(&inf->mtx);
+		if (fork_1->is_fork && fork_1->is_fork)
+		{
+			printf ("phi=%d EAT\n", phi->num);
+			count[phi->num]++;
+
+			pthread_mutex_lock(&fork_1->mtx);
+			fork_1->is_fork = 0;
+			pthread_mutex_unlock(&fork_1->mtx);
+			pthread_mutex_lock(&fork_2->mtx);
+			fork_2->is_fork = 0;
+			pthread_mutex_unlock(&fork_2->mtx);
+
+			pthread_mutex_unlock(&inf->mtx);
+			//lst_eat = clock
+			usleep(inf->ms_eat);
+			pthread_mutex_lock(&fork_1->mtx);
+			fork_1->is_fork = 1;
+			pthread_mutex_unlock(&fork_1->mtx);
+			pthread_mutex_lock(&fork_2->mtx);
+			fork_2->is_fork = 1;
+			pthread_mutex_unlock(&fork_2->mtx);
+			usleep(inf->ms_slp);
+
+			pthread_mutex_lock(&inf->mtx);
+			printf("0=%d 1=%d 3=%d\n", count[0], count[1], count[2]);
+			pthread_mutex_unlock(&inf->mtx);
+		}
+		else
+			pthread_mutex_unlock(&inf->mtx);
