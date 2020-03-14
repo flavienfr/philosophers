@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/12 21:56:16 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/14 17:13:08 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <pthread.h>	//thread
 
 # include <stdio.h>		//printf
+# define DF printf("line\n")
 
 typedef struct	s_inf
 {
@@ -29,17 +30,16 @@ typedef struct	s_inf
 	int				ms_slp;//200
 	int				nb_eat;
 	int				*forks;
-	pthread_t		*thread;
-	pthread_mutex_t	*mtx_gbl;
+	pthread_mutex_t	mtx;
 	struct s_phi	*phi_1;
 }				t_inf;
 
 typedef struct		s_phi
 {
 	int				num;
-	int				*forks;
+	int				lst_eat;
 	pthread_t		*thread;
-	pthread_mutex_t	*mtx_gbl;
+	struct s_inf	*inf;
 	struct s_phi	*next;
 }					t_phi;
 
