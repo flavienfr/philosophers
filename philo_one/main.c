@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/14 19:52:58 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/14 23:51:56 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 **	};
 */
 
-int count[3] = {0, 0, 0 };
+int count[5] = {0, 0, 0, 0, 0};
 
 t_fork	*select_fork(t_fork *fork, int num)
 {
@@ -47,20 +47,32 @@ void	*routine(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&inf->mtx);
-			printf ("phi=%d EAT\n", phi->num);
-			//count[phi->num]++;
+		if (fork_1->is_fork && fork_2->is_fork)
+		{
+			//printf ("phi=%d EAT\n", phi->num);
+			
+			fork_1->is_fork = 0;
+			fork_2->is_fork = 0;
 			pthread_mutex_lock(&fork_1->mtx);
-				//fork_1->is_fork = 0;
 			pthread_mutex_lock(&fork_2->mtx);
-				//fork_2->is_fork = 0;
+
+			pthread_mutex_unlock(&inf->mtx);
 			count[phi->num]++;
-		pthread_mutex_unlock(&inf->mtx);
-		//lst_eat = clock
-		usleep(inf->ms_eat);
-		pthread_mutex_unlock(&fork_1->mtx);
-		pthread_mutex_unlock(&fork_2->mtx);
-		usleep(inf->ms_slp);
-		printf("0=%d 1=%d 3=%d\n", count[0], count[1], count[2]);
+			usleep(inf->ms_eat);
+			
+
+			fork_1->is_fork = 1;
+			pthread_mutex_unlock(&fork_1->mtx);
+			usleep(1);
+			fork_2->is_fork = 1;
+			pthread_mutex_unlock(&fork_2->mtx);
+
+			usleep(inf->ms_slp);
+			if (phi->num == 0)
+				printf("A=%d B=%d C=%d D=%d C=%d\n", count[0], count[1], count[2], count[3], count[4]);
+		}
+		else
+			pthread_mutex_unlock(&inf->mtx);
 	}
 	return (NULL);
 }
@@ -161,9 +173,9 @@ int		main(int ac, char **av)
 	if (ac != 5 && ac != 6)
 		return (EXIT_FAILURE);
 	inf.nb_phi = ft_atoi(av[1]);
-	inf.ms_die = ft_atoi(av[2]);
-	inf.ms_eat = ft_atoi(av[3]);
-	inf.ms_slp = ft_atoi(av[4]);
+	inf.ms_die = ft_atoi(av[2]) * 1000;
+	inf.ms_eat = ft_atoi(av[3]) * 1000;
+	inf.ms_slp = ft_atoi(av[4]) * 1000;
 	inf.nb_eat = ac == 6 ? ft_atoi(av[5]) : -1;
 	// init mutex gbl
 	if (inf.nb_phi <= 0 || inf.ms_die < 0 || inf.ms_eat < 0
