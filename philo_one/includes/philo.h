@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/14 23:51:57 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/16 00:01:24 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,30 @@ typedef struct	s_inf
 	int				ms_eat;//200
 	int				ms_slp;//200
 	int				nb_eat;
-	//int				*forks;
-	//pthread_mutex_t	print;
+	long			ms;
 	pthread_mutex_t	mtx;
+	pthread_t		clock;
 	struct s_fork	*fork_1;
 	struct s_phi	*phi_1;
+	struct s_monit	*monit_1;
 }				t_inf;
+
+typedef struct	s_monit
+{
+	pthread_t			*thread;
+	long int			lst_eat;
+	//pthread_mutex_t	mtx_print;
+	struct s_monit		*next;
+}				t_monit;
 
 typedef struct		s_phi
 {
 	int				num;
-	int				lst_eat;
+	int				status; // eat: 1 sleep: 2 think: 3
+	int				nb_eat;
 	pthread_t		*thread;
 	struct s_inf	*inf;
+	struct s_monit	*monit;
 	struct s_phi	*next;
 }					t_phi;
 
