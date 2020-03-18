@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/16 17:24:05 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/18 16:16:47 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,22 @@
 # include <pthread.h>	//thread
 
 # include <stdio.h>		//printf
+//# include <errno.h>
 # define DF printf("ici\n")
 
 typedef struct	s_inf
 {
-	int				nb_phi;//5
-	int				ms_die;//800
-	int				ms_eat;//200
-	int				ms_slp;//200
+	int				nb_phi;
+	int				ms_die;
+	int				ms_eat;
+	int				ms_slp;
 	int				nb_eat;
-	long			ms;
+	int				time_eat;
 	int				end;
-	//int				eat_reach;
+	struct timeval	time;
+	long			time_start;
 	pthread_mutex_t	mtx;
-	pthread_t		clock;
+	pthread_mutex_t	mtx_monit;
 	struct s_fork	*fork_1;
 	struct s_phi	*phi_1;
 	struct s_monit	*monit_1;
@@ -42,8 +44,7 @@ typedef struct	s_inf
 typedef struct	s_monit
 {
 	pthread_t			thread;
-	long int			lst_eat;
-	//pthread_mutex_t	mtx_print;
+	int					lst_eat;
 	struct s_monit		*next;
 }				t_monit;
 
@@ -52,6 +53,7 @@ typedef struct		s_phi
 	int				num;
 	int				status; // eat: 1 sleep: 2 think: 3
 	int				nb_eat;
+	int				is_dead;
 	pthread_t		thread;
 	struct s_inf	*inf;
 	struct s_monit	*monit;
@@ -69,5 +71,10 @@ typedef struct	s_fork
 **	utils.c
 */
 int				ft_atoi(const char *str);
+
+/*
+**	build.c
+*/
+int			launch_all(t_inf *inf, t_phi *phi, t_monit *monit);
 
 #endif

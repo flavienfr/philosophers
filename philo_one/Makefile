@@ -1,4 +1,4 @@
-SRCS = main.c philo_one.c utils.c
+SRCS = build.c main.c utils.c
 
 INC = -Iincludes/
 
@@ -6,8 +6,7 @@ NAME = philo_one
 
 OBJS = ${SRCS:.c=.o}
 
-FLAGS = 
-#-Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 all : $(NAME)
 
