@@ -6,7 +6,8 @@ NAME = philo_one
 
 OBJS = ${SRCS:.c=.o}
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS =
+# -Wall -Wextra -Werror
 
 all : $(NAME)
 

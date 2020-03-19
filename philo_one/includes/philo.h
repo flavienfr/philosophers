@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/18 19:54:24 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/19 19:17:57 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,17 @@
 # include <unistd.h>	//write usleep
 # include <stdlib.h>	//malloc EXIT_
 # include <sys/time.h>	//time
-# include <string.h>	//memset
 # include <pthread.h>	//thread
 
 # define EAT 1
 # define SLEEP 2
 # define THINK 3
+# define FORK_1 4
+# define FORK_2 5
 
 # include <stdio.h>		//printf
 //# include <errno.h>
+//# include <string.h>	//memset
 # define DF printf("ici\n")
 
 typedef struct	s_inf
@@ -48,6 +50,7 @@ typedef struct	s_inf
 typedef struct	s_monit
 {
 	pthread_t			thread;
+	int					lst_status;
 	int					lst_eat;
 	struct s_monit		*next;
 }				t_monit;
@@ -55,7 +58,6 @@ typedef struct	s_monit
 typedef struct		s_phi
 {
 	int				num;
-	//int				status; // eat: 1 sleep: 2 think: 3
 	int				nb_eat;
 	int				is_dead;
 	pthread_t		thread;

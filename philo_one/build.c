@@ -6,22 +6,27 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/18 19:51:13 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/19 19:14:51 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int		free_all(t_inf *inf, int ret)
-{
+{int err;
 	t_fork	*nxt_fork;
 	t_phi	*nxt_phi;
 
 	while (inf->fork_1)
 	{
 		nxt_fork = inf->fork_1->next;
-		if (pthread_mutex_destroy(&inf->fork_1->mtx))
+		//pthread_mutex_unlock(&inf->fork_1->mtx);
+		if ((err= pthread_mutex_destroy(&inf->fork_1->mtx)))
+		{
+			printf("fail err=%s\n", strerror(err));
 			return (EXIT_FAILURE);
+		}
+		printf("success\n");
 		free(inf->fork_1);
 		inf->fork_1 = nxt_fork;
 	}
@@ -78,6 +83,7 @@ t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 		return (NULL);
 	phi->num = num;
 	phi->nb_eat = 0;
+	phi->is_dead = 0;
 	phi->inf = inf;
 	phi->monit = monit;
 	phi->next = NULL;
@@ -113,7 +119,6 @@ int		create_phi_monit(t_inf *inf)
 			return (1);
 		if (!(cur_p->next = new_phi(inf, cur_m, i)))
 			return (1);
-		cur_p->is_dead = 0;
 		cur_p = cur_p->next;
 		cur_m = cur_m->next;
 	}
@@ -145,7 +150,7 @@ int		main(int ac, char **av)
 	inf.ms_eat = ft_atoi(av[3]) * 1000;
 	inf.ms_slp = ft_atoi(av[4]) * 1000;
 	inf.nb_eat = ac == 6 ? ft_atoi(av[5]) : 0;
-	if (inf.nb_phi <= 0 || inf.ms_die <= 0 || inf.ms_eat <= 0
+	if (inf.nb_phi <= 1 || inf.ms_die <= 0 || inf.ms_eat <= 0
 		|| inf.ms_slp <= 0 || (ac == 6 && inf.nb_eat <= 0))
 		return (EXIT_FAILURE);
 	if (init_inf(&inf))
