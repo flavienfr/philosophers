@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/18 16:17:41 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/18 20:33:47 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,40 @@ int		get_time(t_inf *inf)
 	return (ms);
 }
 
+void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
+{
+	pthread_mutex_lock(&inf->mtx_monit);
+	if (!inf->end)
+	{
+	if (status == EAT)
+	{
+		monit->lst_eat = get_time(inf);
+		printf("%d %d is eating\n", get_time(inf), phi->num + 1);
+		if (inf->nb_eat)
+		{
+			if (++phi->nb_eat == inf->nb_eat)
+				inf->time_eat++;
+			if (inf->time_eat == inf->nb_phi)
+				inf->end = 1;
+		}
+	}
+	else if (status == SLEEP)
+		printf("%d %d is sleeping\n", get_time(inf), phi->num + 1);
+	else if (status == THINK)
+		printf("%d %d is thinking\n", get_time(inf), phi->num + 1);
+	}
+	pthread_mutex_unlock(&inf->mtx_monit);
+}
+
 void	*monitoring(void *arg)
 {
 	t_inf		*inf;
 	t_monit		*monit;
 	t_phi 		*phi;
-	int 		old_stat;
 
 	phi = arg;
 	inf = phi->inf;
 	monit = phi->monit;
-	old_stat = 0;
-	phi->nb_eat = 0;
 	monit->lst_eat = get_time(inf);
 	while (1)
 	{
@@ -66,27 +88,6 @@ void	*monitoring(void *arg)
 			pthread_mutex_unlock(&inf->mtx_monit);
 			pthread_join(phi->thread, NULL);
 			return (NULL);
-		}
-		else if (phi->status && old_stat != phi->status)// mutext pour lire et ecrire status
-		{
-			old_stat = phi->status;
-			if (phi->status == 1)
-			{
-				monit->lst_eat = get_time(inf);
-				printf("%d %d is eating\n", get_time(inf), phi->num + 1);
-				if (inf->nb_eat)
-				{
-					if (++phi->nb_eat == inf->nb_eat)
-						inf->time_eat++;
-					if (inf->time_eat == inf->nb_phi)
-						inf->end = 1;
-				}
-			}
-			else if (phi->status == 2)
-				printf("%d %d is sleeping\n", get_time(inf), phi->num + 1);
-			else if (phi->status == 3)
-				printf("%d %d is thinking\n", get_time(inf), phi->num + 1);
-			
 		}
 		pthread_mutex_unlock(&inf->mtx_monit);
 	}
@@ -118,7 +119,7 @@ void	*routine(void *arg)
 			pthread_mutex_unlock(&inf->mtx);
 			
 
-			phi->status = 1;
+			print_status(inf, phi, phi->monit, EAT);
 			usleep(inf->ms_eat);
 			
 			fork_1->is_fork = 1;
@@ -126,13 +127,12 @@ void	*routine(void *arg)
 			usleep(1000);//is that betters
 			fork_2->is_fork = 1;
 			pthread_mutex_unlock(&fork_2->mtx);
-			phi->status = 2;
+			print_status(inf, phi, phi->monit, SLEEP);
 			usleep(inf->ms_slp);
-			phi->status = 3;
+			print_status(inf, phi, phi->monit, THINK);
 			//printf("Philo: %d ate=%d\n", phi->num, phi->nb_eat);
 		}
 		pthread_mutex_unlock(&inf->mtx);//protect ?
-		phi->status = 3;
 		
 		pthread_mutex_lock(&inf->mtx_monit);
 		if (phi->is_dead /*== inf->nb_phi*/)//ou juste inf->end

@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/18 16:12:40 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/18 19:51:13 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 	if (!(phi = malloc(sizeof(*phi))))
 		return (NULL);
 	phi->num = num;
-	phi->status = 0;
+	phi->nb_eat = 0;
 	phi->inf = inf;
 	phi->monit = monit;
 	phi->next = NULL;

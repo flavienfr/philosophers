@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/18 16:16:47 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/18 19:54:24 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <sys/time.h>	//time
 # include <string.h>	//memset
 # include <pthread.h>	//thread
+
+# define EAT 1
+# define SLEEP 2
+# define THINK 3
 
 # include <stdio.h>		//printf
 //# include <errno.h>
@@ -51,7 +55,7 @@ typedef struct	s_monit
 typedef struct		s_phi
 {
 	int				num;
-	int				status; // eat: 1 sleep: 2 think: 3
+	//int				status; // eat: 1 sleep: 2 think: 3
 	int				nb_eat;
 	int				is_dead;
 	pthread_t		thread;
