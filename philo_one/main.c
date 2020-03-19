@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 19:13:59 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/19 21:11:56 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 		if (status == EAT)
 		{
 			monit->lst_eat = get_time(inf);
-			printf("%d %d is eating\n", get_time(inf), phi->num + 1);
 			if (inf->nb_eat)
 			{
 				if (++phi->nb_eat == inf->nb_eat)
@@ -50,12 +49,7 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 					inf->end = 1;
 			}
 		}
-		else if (status == SLEEP)
-			printf("%d %d is sleeping\n", get_time(inf), phi->num + 1);
-		else if (status == THINK)
-			printf("%d %d is thinking\n", get_time(inf), phi->num + 1);
-		else if (status == FORK_1 || status == FORK_2)
-			printf("%d %d has taken a fork\n", get_time(inf), phi->num + 1);
+		print(get_time(inf), phi->num + 1, status);
 	}
 	pthread_mutex_unlock(&inf->mtx_monit);
 }
@@ -83,7 +77,7 @@ void	*monitoring(void *arg)
 			return (NULL);
 		}
 		if ((get_time(inf) - monit->lst_eat >= inf->ms_die) && (inf->end = 1))
-			printf("%d %d died\n", get_time(inf), phi->num + 1);
+			print(get_time(inf), phi->num + 1, DEAD);
 		pthread_mutex_unlock(&inf->mtx_monit);
 	}
 	return (NULL);

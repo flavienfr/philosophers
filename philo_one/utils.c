@@ -27,7 +27,32 @@ int		ft_atoi(const char *str)
 		out *= -1;
 	return (out);
 }
-/*
+
+void	ft_putstr(char *s)
+{
+	int	i;
+
+	if (!s)
+		return ;
+	i = -1;
+	while (s[++i])
+		write(1, &s[i], 1);
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	unsigned char	*ptr;
+	size_t			i;
+
+	i = 0;
+	size *= count;
+	if (!(ptr = (unsigned char *)malloc(size)))
+		return (0);
+	while (i < size)
+		ptr[i++] = '\0';
+	return (ptr);
+}
+
 static int	len(long int n)
 {
 	int len;
@@ -73,4 +98,4 @@ char		*ft_itoa(int n)
 		i--;
 	}
 	return (s);
-}*/
+}

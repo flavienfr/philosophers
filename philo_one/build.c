@@ -6,27 +6,22 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 19:14:51 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/19 20:48:20 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int		free_all(t_inf *inf, int ret)
-{int err;
+{
 	t_fork	*nxt_fork;
 	t_phi	*nxt_phi;
 
 	while (inf->fork_1)
 	{
 		nxt_fork = inf->fork_1->next;
-		//pthread_mutex_unlock(&inf->fork_1->mtx);
-		if ((err= pthread_mutex_destroy(&inf->fork_1->mtx)))
-		{
-			printf("fail err=%s\n", strerror(err));
+		if (pthread_mutex_destroy(&inf->fork_1->mtx))
 			return (EXIT_FAILURE);
-		}
-		printf("success\n");
 		free(inf->fork_1);
 		inf->fork_1 = nxt_fork;
 	}

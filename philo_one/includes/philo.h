@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 19:17:57 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/19 20:53:01 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define THINK 3
 # define FORK_1 4
 # define FORK_2 5
+# define DEAD 6
 
 # include <stdio.h>		//printf
 //# include <errno.h>
@@ -77,10 +78,17 @@ typedef struct	s_fork
 **	utils.c
 */
 int				ft_atoi(const char *str);
+char			*ft_itoa(int n);
+void			ft_putstr(char *s);
 
 /*
 **	build.c
 */
 int			launch_all(t_inf *inf, t_phi *phi, t_monit *monit);
+
+/*
+**	print.c
+*/
+void    print(int time, int num, int status);
 
 #endif

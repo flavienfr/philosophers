@@ -1,4 +1,4 @@
-SRCS = build.c main.c utils.c
+SRCS = build.c main.c print.c utils.c
 
 INC = -Iincludes/
 
