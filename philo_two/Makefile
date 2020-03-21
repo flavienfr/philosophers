@@ -2,7 +2,7 @@ SRCS = main.c thread.c print.c utils.c
 
 INC = -Iincludes/
 
-NAME = philo_one
+NAME = philo_two
 
 OBJS = ${SRCS:.c=.o}
 

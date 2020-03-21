@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 20:48:20 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/21 19:45:32 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+t_inf *pinf;//debug
+
 int		free_all(t_inf *inf, int ret)
 {
-	t_fork	*nxt_fork;
 	t_phi	*nxt_phi;
 
-	while (inf->fork_1)
-	{
-		nxt_fork = inf->fork_1->next;
-		if (pthread_mutex_destroy(&inf->fork_1->mtx))
-			return (EXIT_FAILURE);
-		free(inf->fork_1);
-		inf->fork_1 = nxt_fork;
-	}
+	sem_close(pinf->sem_pick);
+    sem_unlink("/pickup");
+	sem_close(pinf->sem_monit);
+    sem_unlink("/sem_monit");
+	sem_close(pinf->sem_fork);
+    sem_unlink("/fork");
 	while (inf->phi_1)
 	{
 		free(inf->phi_1->monit);
@@ -32,41 +31,17 @@ int		free_all(t_inf *inf, int ret)
 		free(inf->phi_1);
 		inf->phi_1 = nxt_phi;
 	}
-	if (pthread_mutex_destroy(&inf->mtx))
-		return (EXIT_FAILURE);
-	if (pthread_mutex_destroy(&inf->mtx_monit))
-		return (EXIT_FAILURE);
+	//if (pthread_mutex_destroy(&inf->mtx))
+	//	return (EXIT_FAILURE);
+	//if (pthread_mutex_destroy(&inf->mtx_monit))
+	//	return (EXIT_FAILURE);
 	return (ret);
-}
-
-t_fork	*new_fork(void)
-{
-	t_fork *fork;
-
-	if (!(fork = malloc(sizeof(*fork))))
-		return (NULL);
-	fork->is_fork = 1;
-	if (pthread_mutex_init(&fork->mtx, NULL))
-		return (NULL);
-	fork->next = NULL;
-	return (fork);
 }
 
 int		create_fork(t_inf *inf)
 {
-	t_fork	*cur;
-	int		i;
-
-	i = 0;
-	if (!(inf->fork_1 = new_fork()))
-		return (1);
-	cur = inf->fork_1;
-	while (++i < inf->nb_phi)
-	{
-		if (!(cur->next = new_fork()))
-			return (1);
-		cur = cur->next;
-	}
+	if (!(inf->sem_fork = sem_open("/fork", O_CREAT, 0777, inf->nb_phi)))
+        return (1);
 	return (0);
 }
 
@@ -124,20 +99,44 @@ int		init_inf(t_inf *inf)
 {
 	inf->end = 0;
 	inf->time_eat = 0;
-	if (pthread_mutex_init(&inf->mtx_monit, NULL))
-		return (1);
-	if (pthread_mutex_init(&inf->mtx, NULL))
-		return (1);
+	if (!(inf->sem_pick = sem_open("/pickup", O_CREAT, 0777, 1)))
+        return (1);
+	if (!(inf->sem_monit = sem_open("/sem_monit", O_CREAT, 0777, 1)))
+        return (1);
+	//if (pthread_mutex_init(&inf->mtx_monit, NULL))
+	//	return (1);
+	//if (pthread_mutex_init(&inf->mtx, NULL))
+	//	return (1);
 	if (gettimeofday(&inf->time, NULL))
 		return (EXIT_FAILURE);
 	inf->time_start = inf->time.tv_sec;
 	return (0);
 }
 
+void    signal_handler(int signo)
+{
+	if (signo == SIGINT)
+    {
+        printf("  <-Fin\n");
+		sem_close(pinf->sem_pick);
+        sem_unlink("/pickup");
+		sem_close(pinf->sem_monit);
+        sem_unlink("/sem_monit");
+		sem_close(pinf->sem_fork);
+        sem_unlink("/fork");
+        exit(1);
+    }
+}
+
 int		main(int ac, char **av)
 {
 	t_inf	inf;
 
+    sem_unlink("/pickup");//debug
+    sem_unlink("/sem_monit");//debug
+    sem_unlink("/fork");//debug
+	pinf = &inf;//debug
+	signal(SIGINT, signal_handler);//debug
 	if (ac != 5 && ac != 6)
 		return (EXIT_FAILURE);
 	inf.nb_phi = ft_atoi(av[1]);
