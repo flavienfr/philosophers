@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/21 20:25:20 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/22 16:16:13 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,9 @@ int		get_time(t_inf *inf)
 
 void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 {
-	//pthread_mutex_lock(&inf->mtx_monit);
 	sem_wait(inf->sem_monit);
 	if (!inf->end/* && monit->lst_status != status*/)
 	{
-		//monit->lst_status = status;
 		if (status == EAT)
 		{
 			monit->lst_eat = get_time(inf);
@@ -43,7 +41,6 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 		print(get_time(inf), phi->num + 1, status);
 	}
 	sem_post(inf->sem_monit);
-	//pthread_mutex_unlock(&inf->mtx_monit);
 }
 
 void	*monitoring(void *arg)
@@ -58,23 +55,18 @@ void	*monitoring(void *arg)
 	monit->lst_eat = get_time(inf);
 	while (1)
 	{
-		//pthread_mutex_lock(&inf->mtx_monit);
 		sem_wait(inf->sem_monit);
 		if (inf->end && (phi->is_dead = 1))
 		{
-		//	pthread_mutex_unlock(&inf->mtx_monit);
 			sem_post(inf->sem_monit);
 			pthread_join(phi->thread, NULL);
-		//	pthread_mutex_lock(&inf->mtx_monit);
 			sem_wait(inf->sem_monit);
 			inf->end++;
-		//	pthread_mutex_unlock(&inf->mtx_monit);
 			sem_post(inf->sem_monit);
 			return (NULL);
 		}
 		if ((get_time(inf) - monit->lst_eat >= inf->ms_die) && (inf->end = 1))
 			print(get_time(inf), phi->num + 1, DEAD);
-		//pthread_mutex_unlock(&inf->mtx_monit);
 		sem_post(inf->sem_monit);
 	}
 	return (NULL);
@@ -90,27 +82,25 @@ void	*routine(void *arg)
 	while (1)
 	{
 		print_status(inf, phi, phi->monit, THINK);
-
-		//printf("1phi=%d\n", phi->num);
 		sem_wait(inf->sem_pick);
 		sem_wait(inf->sem_fork);
 		print_status(inf, phi, phi->monit, FORK_1);
 		sem_wait(inf->sem_fork);
 		print_status(inf, phi, phi->monit, FORK_2);
 		sem_post(inf->sem_pick);
-
 		print_status(inf, phi, phi->monit, EAT);
 		usleep(inf->ms_eat);
 		sem_post(inf->sem_fork);
 		sem_post(inf->sem_fork);
-
 		print_status(inf, phi, phi->monit, SLEEP);
 		usleep(inf->ms_slp);
+		if (phi->is_dead)
+			return (NULL);
 	}
 	return (NULL);
 }
 
-int		launch_all(t_inf *inf, t_phi *phi, t_monit *monit)
+int		launch_all(t_inf *inf, t_phi *phi)
 {
 	int end;
 
@@ -127,10 +117,8 @@ int		launch_all(t_inf *inf, t_phi *phi, t_monit *monit)
 	end = 0;
 	while (end != inf->nb_phi + 1)
 	{
-		//pthread_mutex_lock(&inf->mtx_monit);
 		sem_wait(inf->sem_monit);
 		end = inf->end;
-		//pthread_mutex_unlock(&inf->mtx_monit);
 		sem_post(inf->sem_monit);
 	}
 	return (EXIT_SUCCESS);

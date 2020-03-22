@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/21 19:34:32 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/22 18:03:37 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 
 # include <stdio.h>		//printf
 # include <errno.h>		//strerror(errno)
-#include <signal.h>		//ctr-c
 //# include <string.h>	//memset
 # define DF printf("ici\n")
 
@@ -42,22 +41,19 @@ typedef struct	s_inf
 	int				nb_eat;
 	int				time_eat;
 	int				end;
+	int				nb_fork;
 	struct timeval	time;
 	long			time_start;
 	sem_t			*sem_pick;//changer
 	sem_t			*sem_monit;//changer
-	//struct s_fork	*fork_1;
+	sem_t			*sem_fork;//changer
 	struct s_phi	*phi_1;
 	struct s_monit	*monit_1;
-
-	int				nb_fork;
-	sem_t			*sem_fork;//changer
 }				t_inf;
 
 typedef struct	s_monit
 {
 	pthread_t			thread;
-	int					lst_status;
 	int					lst_eat;
 	struct s_monit		*next;
 }				t_monit;
@@ -90,7 +86,7 @@ void			ft_putstr(char *s);
 /*
 **	build.c
 */
-int			launch_all(t_inf *inf, t_phi *phi, t_monit *monit);
+int			launch_all(t_inf *inf, t_phi *phi);
 
 /*
 **	print.c

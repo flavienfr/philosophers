@@ -6,35 +6,35 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/21 19:45:32 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/22 18:04:57 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_inf *pinf;//debug
-
 int		free_all(t_inf *inf, int ret)
 {
 	t_phi	*nxt_phi;
+	t_monit	*nxt_monit;
 
-	sem_close(pinf->sem_pick);
+	sem_close(inf->sem_pick);
     sem_unlink("/pickup");
-	sem_close(pinf->sem_monit);
+	sem_close(inf->sem_monit);
     sem_unlink("/sem_monit");
-	sem_close(pinf->sem_fork);
+	sem_close(inf->sem_fork);
     sem_unlink("/fork");
 	while (inf->phi_1)
 	{
-		free(inf->phi_1->monit);
 		nxt_phi = inf->phi_1->next;
 		free(inf->phi_1);
 		inf->phi_1 = nxt_phi;
 	}
-	//if (pthread_mutex_destroy(&inf->mtx))
-	//	return (EXIT_FAILURE);
-	//if (pthread_mutex_destroy(&inf->mtx_monit))
-	//	return (EXIT_FAILURE);
+	while (inf->monit_1)
+	{
+		nxt_monit = inf->monit_1->next;
+		free(inf->monit_1);
+		inf->monit_1 = nxt_monit;
+	}
 	return (ret);
 }
 
@@ -103,40 +103,19 @@ int		init_inf(t_inf *inf)
         return (1);
 	if (!(inf->sem_monit = sem_open("/sem_monit", O_CREAT, 0777, 1)))
         return (1);
-	//if (pthread_mutex_init(&inf->mtx_monit, NULL))
-	//	return (1);
-	//if (pthread_mutex_init(&inf->mtx, NULL))
-	//	return (1);
 	if (gettimeofday(&inf->time, NULL))
 		return (EXIT_FAILURE);
 	inf->time_start = inf->time.tv_sec;
 	return (0);
 }
 
-void    signal_handler(int signo)
-{
-	if (signo == SIGINT)
-    {
-        printf("  <-Fin\n");
-		sem_close(pinf->sem_pick);
-        sem_unlink("/pickup");
-		sem_close(pinf->sem_monit);
-        sem_unlink("/sem_monit");
-		sem_close(pinf->sem_fork);
-        sem_unlink("/fork");
-        exit(1);
-    }
-}
-
 int		main(int ac, char **av)
 {
 	t_inf	inf;
 
-    sem_unlink("/pickup");//debug
+	sem_unlink("/pickup");//debug
     sem_unlink("/sem_monit");//debug
     sem_unlink("/fork");//debug
-	pinf = &inf;//debug
-	signal(SIGINT, signal_handler);//debug
 	if (ac != 5 && ac != 6)
 		return (EXIT_FAILURE);
 	inf.nb_phi = ft_atoi(av[1]);
@@ -153,7 +132,7 @@ int		main(int ac, char **av)
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
 	if (create_phi_monit(&inf))
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
-	if (launch_all(&inf, inf.phi_1, inf.monit_1))
+	if (launch_all(&inf, inf.phi_1))
 		return (free_all(&inf, EXIT_FAILURE));
 	return (free_all(&inf, EXIT_SUCCESS));
 }
