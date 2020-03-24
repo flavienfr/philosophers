@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/23 18:59:46 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 13:35:23 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,9 @@ int		main(int ac, char **av)
 {
 	t_inf	inf;
 
-	sem_unlink("/pickup");//debug
-    sem_unlink("/sem_monit");//debug
-    sem_unlink("/fork");//debug
+	sem_unlink("/pickup");
+    sem_unlink("/sem_monit");
+    sem_unlink("/fork");
 	if (ac != 5 && ac != 6)
 		return (EXIT_FAILURE);
 	inf.nb_phi = ft_atoi(av[1]);
@@ -137,5 +137,6 @@ int		main(int ac, char **av)
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
 	if (launch_all(&inf, inf.phi_1))
 		return (free_all(&inf, EXIT_FAILURE));
+	close_all(&inf);
 	return (free_all(&inf, EXIT_SUCCESS));
 }

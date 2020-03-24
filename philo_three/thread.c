@@ -6,18 +6,16 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/23 20:12:59 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 14:54:28 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-//protect all mutex woolim didn't ou juste pour debugg
 
 int		get_time(t_inf *inf)
 {
 	if (gettimeofday(&inf->time, NULL))
-		return (0);//gestion erreur
-	//inf->time.tv_sec = inf->time.tv_sec;// dell ca partout 
+		return (0);
 	inf->time.tv_sec -= inf->time_start;
 	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));
 }
@@ -77,10 +75,12 @@ void	routine(t_phi *phi)
 		usleep(inf->ms_eat);
 		sem_post(inf->sem_fork);
 		sem_post(inf->sem_fork);
+		sem_wait(inf->sem_monit);
+		if (++phi->nb_eat == inf->nb_eat)
+			exit(NB_EAT_DEATH);
+		sem_post(inf->sem_monit);
 		print_status(inf, phi, phi->monit, SLEEP);
 		usleep(inf->ms_slp);
-		if (phi->is_dead)
-			exit(0);
 	}
 	exit(0);
 }
@@ -88,7 +88,6 @@ void	routine(t_phi *phi)
 int		launch_all(t_inf *inf, t_phi *phi)
 {
 	int		i;
-	int		status;
 
 	i = -1;
 	while (phi)
@@ -103,9 +102,29 @@ int		launch_all(t_inf *inf, t_phi *phi)
 		}
 		phi = phi->next;
 	}
-	waitpid(-1, &status, 0);//check return
-	i = -1;
-	while (++i < inf->nb_phi)
-		kill(inf->pid_tab[i], SIGINT);
-	return (EXIT_SUCCESS);
+}
+
+void	close_all(t_inf *inf)
+{
+	int		i;
+	int		philo;
+	int		status;
+
+	philo = inf->nb_phi;
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		if (WEXITSTATUS(status) == TIME_DEATH)
+		{
+			i = -1;
+			while (++i < inf->nb_phi)
+				kill(inf->pid_tab[i], SIGINT);
+			return ;
+		}
+		else if (WEXITSTATUS(status) == NB_EAT_DEATH)
+		{
+			sem_post(inf->sem_monit);
+			if (--philo == 0)
+				return ;
+		}
+	}
 }

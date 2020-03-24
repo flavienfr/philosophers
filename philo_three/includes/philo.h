@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/23 20:12:58 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 14:54:35 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define FORK_2 5
 # define DEAD 6
 # define TIME_DEATH 10
-# define EAT_DEATH 11
+# define NB_EAT_DEATH 11
 
 # include <stdio.h>		//printf
 # include <errno.h>		//strerror(errno)
@@ -74,13 +74,6 @@ typedef struct		s_phi
 	struct s_phi	*next;
 }					t_phi;
 
-/*typedef struct	s_fork
-{
-	int				nb_fork;
-	sem_t			*sem;//changer
-	struct s_fork	*next;
-}				t_fork;*/
-
 /*
 **	utils.c
 */
@@ -89,9 +82,10 @@ char			*ft_itoa(int n);
 void			ft_putstr(char *s);
 
 /*
-**	build.c
+**	thread.c
 */
 int			launch_all(t_inf *inf, t_phi *phi);
+void		close_all(t_inf *inf);
 
 /*
 **	print.c
