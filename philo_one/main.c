@@ -1,74 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   build.c                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 20:48:20 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:47:33 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int		free_all(t_inf *inf, int ret)
-{
-	t_fork	*nxt_fork;
-	t_phi	*nxt_phi;
-
-	while (inf->fork_1)
-	{
-		nxt_fork = inf->fork_1->next;
-		if (pthread_mutex_destroy(&inf->fork_1->mtx))
-			return (EXIT_FAILURE);
-		free(inf->fork_1);
-		inf->fork_1 = nxt_fork;
-	}
-	while (inf->phi_1)
-	{
-		free(inf->phi_1->monit);
-		nxt_phi = inf->phi_1->next;
-		free(inf->phi_1);
-		inf->phi_1 = nxt_phi;
-	}
-	if (pthread_mutex_destroy(&inf->mtx))
-		return (EXIT_FAILURE);
-	if (pthread_mutex_destroy(&inf->mtx_monit))
-		return (EXIT_FAILURE);
-	return (ret);
-}
-
-t_fork	*new_fork(void)
-{
-	t_fork *fork;
-
-	if (!(fork = malloc(sizeof(*fork))))
-		return (NULL);
-	fork->is_fork = 1;
-	if (pthread_mutex_init(&fork->mtx, NULL))
-		return (NULL);
-	fork->next = NULL;
-	return (fork);
-}
-
-int		create_fork(t_inf *inf)
-{
-	t_fork	*cur;
-	int		i;
-
-	i = 0;
-	if (!(inf->fork_1 = new_fork()))
-		return (1);
-	cur = inf->fork_1;
-	while (++i < inf->nb_phi)
-	{
-		if (!(cur->next = new_fork()))
-			return (1);
-		cur = cur->next;
-	}
-	return (0);
-}
 
 t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 {
@@ -83,16 +25,6 @@ t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 	phi->monit = monit;
 	phi->next = NULL;
 	return (phi);
-}
-
-t_monit	*new_monit()
-{
-	t_monit	*monit;
-
-	if (!(monit = malloc(sizeof(*monit))))
-		return (NULL);
-	monit->next = NULL;
-	return (monit);
 }
 
 int		create_phi_monit(t_inf *inf)
@@ -120,8 +52,24 @@ int		create_phi_monit(t_inf *inf)
 	return (0);
 }
 
-int		init_inf(t_inf *inf)
+t_fork	*new_fork(void)
 {
+	t_fork *fork;
+
+	if (!(fork = malloc(sizeof(*fork))))
+		return (NULL);
+	fork->is_fork = 1;
+	if (pthread_mutex_init(&fork->mtx, NULL))
+		return (NULL);
+	fork->next = NULL;
+	return (fork);
+}
+
+int		init_inf_fork(t_inf *inf)
+{
+	t_fork	*cur;
+	int		i;
+
 	inf->end = 0;
 	inf->time_eat = 0;
 	if (pthread_mutex_init(&inf->mtx_monit, NULL))
@@ -131,6 +79,16 @@ int		init_inf(t_inf *inf)
 	if (gettimeofday(&inf->time, NULL))
 		return (EXIT_FAILURE);
 	inf->time_start = inf->time.tv_sec;
+	i = 0;
+	if (!(inf->fork_1 = new_fork()))
+		return (1);
+	cur = inf->fork_1;
+	while (++i < inf->nb_phi)
+	{
+		if (!(cur->next = new_fork()))
+			return (1);
+		cur = cur->next;
+	}
 	return (0);
 }
 
@@ -148,13 +106,11 @@ int		main(int ac, char **av)
 	if (inf.nb_phi <= 1 || inf.ms_die <= 0 || inf.ms_eat <= 0
 		|| inf.ms_slp <= 0 || (ac == 6 && inf.nb_eat <= 0))
 		return (EXIT_FAILURE);
-	if (init_inf(&inf))
-		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
-	if (create_fork(&inf))
+	if (init_inf_fork(&inf))
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
 	if (create_phi_monit(&inf))
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
-	if (launch_all(&inf, inf.phi_1, inf.monit_1))
+	if (launch_all(&inf, inf.phi_1))
 		return (free_all(&inf, EXIT_FAILURE));
 	return (free_all(&inf, EXIT_SUCCESS));
 }

@@ -1,36 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 21:11:56 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:47:32 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 //protect all mutex woolim didn't ou juste pour debugg
-
-t_fork	*select_fork(t_fork *fork, int num)
-{
-	int i;
-
-	i = -1;
-	while (++i < num)
-		fork = fork->next;
-	return (fork);
-}
-
-int		get_time(t_inf *inf)
-{
-	if (gettimeofday(&inf->time, NULL))
-		return (0);//gestion erreur
-	inf->time.tv_sec = inf->time.tv_sec;
-	inf->time.tv_sec -= inf->time_start;
-	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));
-}
 
 void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 {
@@ -133,7 +114,7 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-int		launch_all(t_inf *inf, t_phi *phi, t_monit *monit)
+int		launch_all(t_inf *inf, t_phi *phi)
 {
 	int end;
 

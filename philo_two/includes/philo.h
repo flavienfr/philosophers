@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/22 18:03:37 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:56:27 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,18 +44,18 @@ typedef struct	s_inf
 	int				nb_fork;
 	struct timeval	time;
 	long			time_start;
-	sem_t			*sem_pick;//changer
-	sem_t			*sem_monit;//changer
-	sem_t			*sem_fork;//changer
+	sem_t			*sem_pick;
+	sem_t			*sem_monit;
+	sem_t			*sem_fork;
 	struct s_phi	*phi_1;
 	struct s_monit	*monit_1;
 }				t_inf;
 
 typedef struct	s_monit
 {
-	pthread_t			thread;
-	int					lst_eat;
-	struct s_monit		*next;
+	pthread_t		thread;
+	int				lst_eat;
+	struct s_monit	*next;
 }				t_monit;
 
 typedef struct		s_phi
@@ -69,13 +69,6 @@ typedef struct		s_phi
 	struct s_phi	*next;
 }					t_phi;
 
-/*typedef struct	s_fork
-{
-	int				nb_fork;
-	sem_t			*sem;//changer
-	struct s_fork	*next;
-}				t_fork;*/
-
 /*
 **	utils.c
 */
@@ -84,13 +77,14 @@ char			*ft_itoa(int n);
 void			ft_putstr(char *s);
 
 /*
-**	build.c
+**	thread.c
 */
 int			launch_all(t_inf *inf, t_phi *phi);
 
 /*
-**	print.c
+**	print_free.c
 */
 void    print(int time, int num, int status);
+int		free_all(t_inf *inf, int ret);
 
 #endif

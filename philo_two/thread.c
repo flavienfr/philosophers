@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/22 16:16:13 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:56:23 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		get_time(t_inf *inf)
 void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 {
 	sem_wait(inf->sem_monit);
-	if (!inf->end/* && monit->lst_status != status*/)
+	if (!inf->end)
 	{
 		if (status == EAT)
 		{

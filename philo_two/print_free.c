@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print.c                                            :+:      :+:    :+:   */
+/*   print_free.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/19 19:39:27 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 21:13:32 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:56:25 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,30 @@ void    print(int time, int num, int status)
         ft_putstr(" died\n");
     free(str_time);
     free(str_num);
+}
+
+int		free_all(t_inf *inf, int ret)
+{
+	t_phi	*nxt_phi;
+	t_monit	*nxt_monit;
+
+	sem_close(inf->sem_pick);
+    sem_unlink("/pickup");
+	sem_close(inf->sem_monit);
+    sem_unlink("/sem_monit");
+	sem_close(inf->sem_fork);
+    sem_unlink("/fork");
+	while (inf->phi_1)
+	{
+		nxt_phi = inf->phi_1->next;
+		free(inf->phi_1);
+		inf->phi_1 = nxt_phi;
+	}
+	while (inf->monit_1)
+	{
+		nxt_monit = inf->monit_1->next;
+		free(inf->monit_1);
+		inf->monit_1 = nxt_monit;
+	}
+	return (ret);
 }

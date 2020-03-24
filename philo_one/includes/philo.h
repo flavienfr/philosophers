@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/19 20:53:01 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 17:47:29 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 //# include <string.h>	//memset
 # define DF printf("ici\n")
 
-typedef struct	s_inf
+typedef struct		s_inf
 {
 	int				nb_phi;
 	int				ms_die;
@@ -46,15 +46,15 @@ typedef struct	s_inf
 	struct s_fork	*fork_1;
 	struct s_phi	*phi_1;
 	struct s_monit	*monit_1;
-}				t_inf;
+}					t_inf;
 
-typedef struct	s_monit
+typedef struct		s_monit
 {
-	pthread_t			thread;
-	int					lst_status;
-	int					lst_eat;
-	struct s_monit		*next;
-}				t_monit;
+	pthread_t		thread;
+	int				lst_status;
+	int				lst_eat;
+	struct s_monit	*next;
+}					t_monit;
 
 typedef struct		s_phi
 {
@@ -67,12 +67,12 @@ typedef struct		s_phi
 	struct s_phi	*next;
 }					t_phi;
 
-typedef struct	s_fork
+typedef struct		s_fork
 {
 	int				is_fork;
 	pthread_mutex_t	mtx;
 	struct s_fork	*next;
-}				t_fork;
+}					t_fork;
 
 /*
 **	utils.c
@@ -82,13 +82,21 @@ char			*ft_itoa(int n);
 void			ft_putstr(char *s);
 
 /*
-**	build.c
+**	other.c
 */
-int			launch_all(t_inf *inf, t_phi *phi, t_monit *monit);
+t_monit			*new_monit();
+int				get_time(t_inf *inf);
+int				free_all(t_inf *inf, int ret);
+t_fork			*select_fork(t_fork *fork, int num);
+
+/*
+**	philo.c
+*/
+int				launch_all(t_inf *inf, t_phi *phi);
 
 /*
 **	print.c
 */
-void    print(int time, int num, int status);
+void			print(int time, int num, int status);
 
 #endif
