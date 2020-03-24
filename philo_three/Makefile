@@ -1,4 +1,4 @@
-SRCS = main.c thread.c print.c utils.c
+SRCS = main.c philo.c print.c close.c utils.c
 
 INC = -Iincludes/
 
@@ -6,8 +6,7 @@ NAME = philo_three
 
 OBJS = ${SRCS:.c=.o}
 
-FLAGS = 
-#-Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 all : $(NAME)
 

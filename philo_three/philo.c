@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread.c                                           :+:      :+:    :+:   */
+/*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 14:54:28 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 15:12:20 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int		launch_all(t_inf *inf, t_phi *phi)
 	i = -1;
 	while (phi)
 	{
-		if ((inf->pid_tab[++i] = fork()) == 0)//-1 erreur
+		if ((inf->pid_tab[++i] = fork()) == 0)
 		{
 			if (pthread_create(&phi->monit->thread, NULL, monitoring, phi))
 				return (EXIT_FAILURE);
@@ -100,31 +100,9 @@ int		launch_all(t_inf *inf, t_phi *phi)
 				return (EXIT_FAILURE);
 			routine(phi);
 		}
+		else if (inf->pid_tab[i] == -1)
+			return (EXIT_FAILURE);
 		phi = phi->next;
 	}
-}
-
-void	close_all(t_inf *inf)
-{
-	int		i;
-	int		philo;
-	int		status;
-
-	philo = inf->nb_phi;
-	while (waitpid(-1, &status, 0) > 0)
-	{
-		if (WEXITSTATUS(status) == TIME_DEATH)
-		{
-			i = -1;
-			while (++i < inf->nb_phi)
-				kill(inf->pid_tab[i], SIGINT);
-			return ;
-		}
-		else if (WEXITSTATUS(status) == NB_EAT_DEATH)
-		{
-			sem_post(inf->sem_monit);
-			if (--philo == 0)
-				return ;
-		}
-	}
+	return (EXIT_SUCCESS);
 }

@@ -6,45 +6,11 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 13:35:23 by froussel         ###   ########.fr       */
+/*   Updated: 2020/03/24 15:06:36 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int		free_all(t_inf *inf, int ret)
-{
-	t_phi	*nxt_phi;
-	t_monit	*nxt_monit;
-
-	sem_close(inf->sem_pick);
-    sem_unlink("/pickup");
-	sem_close(inf->sem_monit);
-    sem_unlink("/sem_monit");
-	sem_close(inf->sem_fork);
-    sem_unlink("/fork");
-	while (inf->phi_1)
-	{
-		nxt_phi = inf->phi_1->next;
-		free(inf->phi_1);
-		inf->phi_1 = nxt_phi;
-	}
-	while (inf->monit_1)
-	{
-		nxt_monit = inf->monit_1->next;
-		free(inf->monit_1);
-		inf->monit_1 = nxt_monit;
-	}
-	free(inf->pid_tab);
-	return (ret);
-}
-
-int		create_fork(t_inf *inf)
-{
-	if (!(inf->sem_fork = sem_open("/fork", O_CREAT, 0777, inf->nb_phi)))
-        return (1);
-	return (0);
-}
 
 t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 {
@@ -96,9 +62,8 @@ int		create_phi_monit(t_inf *inf)
 	return (0);
 }
 
-int		init_inf(t_inf *inf)
+int		init_inf_fork(t_inf *inf)
 {
-	inf->end = 0;
 	inf->time_eat = 0;
 	if (!(inf->pid_tab = malloc(sizeof(pid_t) * inf->nb_phi)))
 		return (1);
@@ -109,6 +74,8 @@ int		init_inf(t_inf *inf)
 	if (gettimeofday(&inf->time, NULL))
 		return (EXIT_FAILURE);
 	inf->time_start = inf->time.tv_sec;
+	if (!(inf->sem_fork = sem_open("/fork", O_CREAT, 0777, inf->nb_phi)))
+        return (1);
 	return (0);
 }
 
@@ -129,9 +96,7 @@ int		main(int ac, char **av)
 	if (inf.nb_phi <= 1 || inf.ms_die <= 0 || inf.ms_eat <= 0
 		|| inf.ms_slp <= 0 || (ac == 6 && inf.nb_eat <= 0))
 		return (EXIT_FAILURE);
-	if (init_inf(&inf))
-		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
-	if (create_fork(&inf))
+	if (init_inf_fork(&inf))
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
 	if (create_phi_monit(&inf))
 		return (free_all(&inf, free_all(&inf, EXIT_FAILURE)));
