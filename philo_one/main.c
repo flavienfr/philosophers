@@ -44,7 +44,7 @@ int		create_phi_monit(t_inf *inf)
 	{
 		if (!(cur_m->next = new_monit(inf, i)))
 			return (1);
-		if (!(cur_p->next = new_phi(inf, cur_m, i)))
+		if (!(cur_p->next = new_phi(inf, cur_m->next, i)))//before  cur_m need test
 			return (1);
 		cur_p = cur_p->next;
 		cur_m = cur_m->next;
