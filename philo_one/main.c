@@ -6,7 +6,7 @@
 /*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:47:33 by froussel         ###   ########.fr       */
+/*   Updated: 2020/04/02 15:20:05 by froussel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int		create_phi_monit(t_inf *inf)
 	{
 		if (!(cur_m->next = new_monit(inf, i)))
 			return (1);
-		if (!(cur_p->next = new_phi(inf, cur_m, i)))
+		if (!(cur_p->next = new_phi(inf, cur_m->next, i)))
 			return (1);
 		cur_p = cur_p->next;
 		cur_m = cur_m->next;
