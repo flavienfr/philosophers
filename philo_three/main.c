@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/04/02 15:33:32 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 23:05:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_phi	*new_phi(t_inf *inf, t_monit *monit, int num)
 	return (phi);
 }
 
-t_monit	*new_monit()
+t_monit	*new_monit(void)
 {
 	t_monit	*monit;
 
@@ -68,14 +68,14 @@ int		init_inf_fork(t_inf *inf)
 	if (!(inf->pid_tab = malloc(sizeof(pid_t) * inf->nb_phi)))
 		return (1);
 	if (!(inf->sem_pick = sem_open("/pickup", O_CREAT, 0777, 1)))
-        return (1);
+		return (1);
 	if (!(inf->sem_monit = sem_open("/sem_monit", O_CREAT, 0777, 1)))
-        return (1);
+		return (1);
 	if (gettimeofday(&inf->time, NULL))
 		return (EXIT_FAILURE);
 	inf->time_start = inf->time.tv_sec;
 	if (!(inf->sem_fork = sem_open("/fork", O_CREAT, 0777, inf->nb_phi)))
-        return (1);
+		return (1);
 	return (0);
 }
 
@@ -84,8 +84,8 @@ int		main(int ac, char **av)
 	t_inf	inf;
 
 	sem_unlink("/pickup");
-    sem_unlink("/sem_monit");
-    sem_unlink("/fork");
+	sem_unlink("/sem_monit");
+	sem_unlink("/fork");
 	if (ac != 5 && ac != 6)
 		return (EXIT_FAILURE);
 	inf.nb_phi = ft_atoi(av[1]);

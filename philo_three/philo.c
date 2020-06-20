@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 15:12:20 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 23:06:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 
 void	*monitoring(void *arg)
 {
-	t_inf		*inf;
-	t_monit		*monit;
-	t_phi 		*phi;
+	t_inf	*inf;
+	t_monit	*monit;
+	t_phi	*phi;
 
 	phi = arg;
 	inf = phi->inf;
@@ -52,7 +52,6 @@ void	*monitoring(void *arg)
 			exit(TIME_DEATH);
 		}
 		sem_post(inf->sem_monit);
-
 	}
 	return (NULL);
 }

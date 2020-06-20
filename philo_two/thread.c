@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   thread.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:56:23 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 22:21:19 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-//protect all mutex woolim didn't ou juste pour debugg
 
 int		get_time(t_inf *inf)
 {
 	if (gettimeofday(&inf->time, NULL))
-		return (0);//gestion erreur
+		return (0);
 	inf->time.tv_sec = inf->time.tv_sec;
 	inf->time.tv_sec -= inf->time_start;
 	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));
@@ -47,7 +46,7 @@ void	*monitoring(void *arg)
 {
 	t_inf		*inf;
 	t_monit		*monit;
-	t_phi 		*phi;
+	t_phi		*phi;
 
 	phi = arg;
 	inf = phi->inf;

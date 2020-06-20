@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:56:27 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 22:15:59 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <unistd.h>	//write usleep
-# include <stdlib.h>	//malloc EXIT_
-# include <sys/time.h>	//time
-# include <pthread.h>	//thread
-# include <semaphore.h>	//semaphore
-# include <fcntl.h> 	//O_CREAT
+# include <unistd.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <pthread.h>
+# include <semaphore.h>
+# include <fcntl.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -26,11 +26,6 @@
 # define FORK_1 4
 # define FORK_2 5
 # define DEAD 6
-
-# include <stdio.h>		//printf
-# include <errno.h>		//strerror(errno)
-//# include <string.h>	//memset
-# define DF printf("ici\n")
 
 typedef struct	s_inf
 {
@@ -58,7 +53,7 @@ typedef struct	s_monit
 	struct s_monit	*next;
 }				t_monit;
 
-typedef struct		s_phi
+typedef struct	s_phi
 {
 	int				num;
 	int				nb_eat;
@@ -67,7 +62,7 @@ typedef struct		s_phi
 	struct s_inf	*inf;
 	struct s_monit	*monit;
 	struct s_phi	*next;
-}					t_phi;
+}				t_phi;
 
 /*
 **	utils.c
@@ -79,12 +74,12 @@ void			ft_putstr(char *s);
 /*
 **	thread.c
 */
-int			launch_all(t_inf *inf, t_phi *phi);
+int				launch_all(t_inf *inf, t_phi *phi);
 
 /*
 **	print_free.c
 */
-void    print(int time, int num, int status);
-int		free_all(t_inf *inf, int ret);
+void			print(int time, int num, int status);
+int				free_all(t_inf *inf, int ret);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   close.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 15:03:06 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 15:03:40 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 23:04:38 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ int		free_all(t_inf *inf, int ret)
 	t_monit	*nxt_monit;
 
 	sem_close(inf->sem_pick);
-    sem_unlink("/pickup");
+	sem_unlink("/pickup");
 	sem_close(inf->sem_monit);
-    sem_unlink("/sem_monit");
+	sem_unlink("/sem_monit");
 	sem_close(inf->sem_fork);
-    sem_unlink("/fork");
+	sem_unlink("/fork");
 	while (inf->phi_1)
 	{
 		nxt_phi = inf->phi_1->next;
