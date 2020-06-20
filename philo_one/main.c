@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/04/02 15:35:18 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 21:28:31 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int		create_phi_monit(t_inf *inf)
 	{
 		if (!(cur_m->next = new_monit()))
 			return (1);
-		if (!(cur_p->next = new_phi(inf, cur_m->next, i)))//before  cur_m need test
+		if (!(cur_p->next = new_phi(inf, cur_m->next, i)))
 			return (1);
 		cur_p = cur_p->next;
 		cur_m = cur_m->next;

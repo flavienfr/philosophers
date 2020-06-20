@@ -11,7 +11,7 @@ FLAGS = -Wall -Wextra -Werror
 all : $(NAME)
 
 $(NAME) : ${OBJS}
-		gcc ${OBJS} -o $(NAME) -lpthread # useless -lpthread 
+		gcc ${OBJS} -o $(NAME) -lpthread
 
 .c.o : ${SRCS}
 		gcc ${INC} ${FLAGS} -c $< -o ${<:.c=.o}

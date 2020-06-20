@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ohter.c                                            :+:      :+:    :+:   */
+/*   other.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 17:41:12 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:47:30 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 21:29:11 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_monit	*new_monit()
+t_monit	*new_monit(void)
 {
 	t_monit	*monit;
 
@@ -35,7 +35,7 @@ t_fork	*select_fork(t_fork *fork, int num)
 int		get_time(t_inf *inf)
 {
 	if (gettimeofday(&inf->time, NULL))
-		return (0);//gestion erreur
+		return (0);
 	inf->time.tv_sec = inf->time.tv_sec;
 	inf->time.tv_sec -= inf->time_start;
 	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));

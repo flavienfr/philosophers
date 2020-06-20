@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:47:29 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 21:35:26 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <unistd.h>	//write usleep
-# include <stdlib.h>	//malloc EXIT_
-# include <sys/time.h>	//time
-# include <pthread.h>	//thread
+# include <unistd.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <pthread.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -24,11 +24,6 @@
 # define FORK_1 4
 # define FORK_2 5
 # define DEAD 6
-
-# include <stdio.h>		//printf
-//# include <errno.h>
-//# include <string.h>	//memset
-# define DF printf("ici\n")
 
 typedef struct		s_inf
 {
@@ -77,26 +72,26 @@ typedef struct		s_fork
 /*
 **	utils.c
 */
-int				ft_atoi(const char *str);
-char			*ft_itoa(int n);
-void			ft_putstr(char *s);
+int					ft_atoi(const char *str);
+char				*ft_itoa(int n);
+void				ft_putstr(char *s);
 
 /*
 **	other.c
 */
-t_monit			*new_monit();
-int				get_time(t_inf *inf);
-int				free_all(t_inf *inf, int ret);
-t_fork			*select_fork(t_fork *fork, int num);
+t_monit				*new_monit();
+int					get_time(t_inf *inf);
+int					free_all(t_inf *inf, int ret);
+t_fork				*select_fork(t_fork *fork, int num);
 
 /*
 **	philo.c
 */
-int				launch_all(t_inf *inf, t_phi *phi);
+int					launch_all(t_inf *inf, t_phi *phi);
 
 /*
 **	print.c
 */
-void			print(int time, int num, int status);
+void				print(int time, int num, int status);
 
 #endif

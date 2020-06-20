@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: froussel <froussel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/03/24 17:47:32 by froussel         ###   ########.fr       */
+/*   Updated: 2020/06/20 21:30:23 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-//protect all mutex woolim didn't ou juste pour debugg
 
 void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 {
@@ -39,7 +38,7 @@ void	*monitoring(void *arg)
 {
 	t_inf		*inf;
 	t_monit		*monit;
-	t_phi 		*phi;
+	t_phi		*phi;
 
 	phi = arg;
 	inf = phi->inf;
@@ -79,7 +78,7 @@ void	eat_sleep(t_inf *inf, t_phi *phi, t_fork *fork_1, t_fork *fork_2)
 	fork_1->is_fork = 1;
 	pthread_mutex_unlock(&fork_1->mtx);
 	if (inf->nb_phi % 2)
-		usleep(10000);//less or more
+		usleep(10000);
 	fork_2->is_fork = 1;
 	pthread_mutex_unlock(&fork_2->mtx);
 	usleep(inf->ms_slp);

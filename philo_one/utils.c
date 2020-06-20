@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/06/20 21:32:31 by user42            #+#    #+#             */
+/*   Updated: 2020/06/20 21:33:19 by user42           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int		ft_atoi(const char *str)
+int			ft_atoi(const char *str)
 {
 	int i;
 	int out;
@@ -28,7 +40,7 @@ int		ft_atoi(const char *str)
 	return (out);
 }
 
-void	ft_putstr(char *s)
+void		ft_putstr(char *s)
 {
 	int	i;
 
@@ -39,7 +51,7 @@ void	ft_putstr(char *s)
 		write(1, &s[i], 1);
 }
 
-void	*ft_calloc(size_t count, size_t size)
+void		*ft_calloc(size_t count, size_t size)
 {
 	unsigned char	*ptr;
 	size_t			i;
