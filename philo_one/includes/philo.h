@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 21:35:26 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 00:19:51 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <stdint.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -34,8 +35,7 @@ typedef struct		s_inf
 	int				nb_eat;
 	int				time_eat;
 	int				end;
-	struct timeval	time;
-	long			time_start;
+	uint64_t		time_start;
 	pthread_mutex_t	mtx;
 	pthread_mutex_t	mtx_monit;
 	struct s_fork	*fork_1;
@@ -47,7 +47,7 @@ typedef struct		s_monit
 {
 	pthread_t		thread;
 	int				lst_status;
-	int				lst_eat;
+	uint64_t		lst_eat;
 	struct s_monit	*next;
 }					t_monit;
 
@@ -79,8 +79,10 @@ void				ft_putstr(char *s);
 /*
 **	other.c
 */
-t_monit				*new_monit();
-int					get_time(t_inf *inf);
+t_monit				*new_monit(void);
+void				ft_usleep(uint64_t us);
+uint64_t			get_the_time(void);
+uint64_t			get_time(uint64_t time_start);
 int					free_all(t_inf *inf, int ret);
 t_fork				*select_fork(t_fork *fork, int num);
 

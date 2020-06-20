@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 21:28:31 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/20 23:34:18 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,6 @@ int		init_inf_fork(t_inf *inf)
 		return (1);
 	if (pthread_mutex_init(&inf->mtx, NULL))
 		return (1);
-	if (gettimeofday(&inf->time, NULL))
-		return (EXIT_FAILURE);
-	inf->time_start = inf->time.tv_sec;
 	i = 0;
 	if (!(inf->fork_1 = new_fork()))
 		return (1);

@@ -6,13 +6,13 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 17:41:12 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 21:29:11 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 00:19:51 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_monit	*new_monit(void)
+t_monit		*new_monit(void)
 {
 	t_monit	*monit;
 
@@ -22,7 +22,7 @@ t_monit	*new_monit(void)
 	return (monit);
 }
 
-t_fork	*select_fork(t_fork *fork, int num)
+t_fork		*select_fork(t_fork *fork, int num)
 {
 	int i;
 
@@ -32,16 +32,30 @@ t_fork	*select_fork(t_fork *fork, int num)
 	return (fork);
 }
 
-int		get_time(t_inf *inf)
+void	ft_usleep(uint64_t us)
 {
-	if (gettimeofday(&inf->time, NULL))
-		return (0);
-	inf->time.tv_sec = inf->time.tv_sec;
-	inf->time.tv_sec -= inf->time_start;
-	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));
+	uint64_t target;
+
+	target = get_the_time() + (us / 1000);
+	while (get_the_time() < target)
+		usleep(50);
 }
 
-int		free_all(t_inf *inf, int ret)
+uint64_t	get_the_time(void)
+{
+	struct timeval time;
+
+	if (gettimeofday(&time, NULL))
+		return (0);
+	return ((1000 * time.tv_sec) + (time.tv_usec / 1000));
+}
+
+uint64_t	get_time(uint64_t time_start)
+{
+	return (get_the_time() - time_start);
+}
+
+int			free_all(t_inf *inf, int ret)
 {
 	t_fork	*nxt_fork;
 	t_phi	*nxt_phi;
