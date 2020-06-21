@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/21 00:22:42 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 01:42:06 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ void	*monitoring(void *arg)
 			pthread_mutex_unlock(&inf->mtx_monit);
 			return (NULL);
 		}
-		if ((get_time(inf->time_start) - monit->lst_eat >= (uint64_t)inf->ms_die) && (inf->end = 1))
+		if ((get_time(inf->time_start) - monit->lst_eat >=
+			(uint64_t)inf->ms_die) && (inf->end = 1))
 			print(get_time(inf->time_start), phi->num + 1, DEAD);
 		pthread_mutex_unlock(&inf->mtx_monit);
 	}
-	return (NULL);
 }
 
 void	eat_sleep(t_inf *inf, t_phi *phi, t_fork *fork_1, t_fork *fork_2)
@@ -73,18 +73,15 @@ void	eat_sleep(t_inf *inf, t_phi *phi, t_fork *fork_1, t_fork *fork_2)
 	print_status(inf, phi, phi->monit, FORK_2);
 	pthread_mutex_unlock(&inf->mtx);
 	print_status(inf, phi, phi->monit, EAT);
-	//usleep(inf->ms_eat);
-	ft_usleep(inf->ms_eat);
+	usleep(inf->ms_eat);
 	print_status(inf, phi, phi->monit, SLEEP);
 	fork_1->is_fork = 1;
 	pthread_mutex_unlock(&fork_1->mtx);
 	if (inf->nb_phi % 2)
-		ft_usleep(10000);
-	//usleep(10000);
+		usleep(10000);
 	fork_2->is_fork = 1;
 	pthread_mutex_unlock(&fork_2->mtx);
-	//usleep(inf->ms_slp);
-	ft_usleep(inf->ms_slp);
+	usleep(inf->ms_slp);
 }
 
 void	*routine(void *arg)

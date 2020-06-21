@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/21 00:19:51 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 01:26:19 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void				ft_putstr(char *s);
 **	other.c
 */
 t_monit				*new_monit(void);
-void				ft_usleep(uint64_t us);
 uint64_t			get_the_time(void);
 uint64_t			get_time(uint64_t time_start);
 int					free_all(t_inf *inf, int ret);

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 17:41:12 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/21 00:19:51 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 01:28:44 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_monit		*new_monit(void)
 
 	if (!(monit = malloc(sizeof(*monit))))
 		return (NULL);
+	monit->lst_status = 0;
 	monit->next = NULL;
 	return (monit);
 }
@@ -30,15 +31,6 @@ t_fork		*select_fork(t_fork *fork, int num)
 	while (++i < num)
 		fork = fork->next;
 	return (fork);
-}
-
-void	ft_usleep(uint64_t us)
-{
-	uint64_t target;
-
-	target = get_the_time() + (us / 1000);
-	while (get_the_time() < target)
-		usleep(50);
 }
 
 uint64_t	get_the_time(void)
