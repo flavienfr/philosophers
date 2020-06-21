@@ -1,4 +1,4 @@
-SRCS = main.c thread.c print_free.c utils.c
+SRCS = main.c thread.c print_free.c utils.c other.c
 
 INC = -Iincludes/
 

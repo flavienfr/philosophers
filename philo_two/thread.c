@@ -6,20 +6,11 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:49:15 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 22:21:19 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 15:00:34 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int		get_time(t_inf *inf)
-{
-	if (gettimeofday(&inf->time, NULL))
-		return (0);
-	inf->time.tv_sec = inf->time.tv_sec;
-	inf->time.tv_sec -= inf->time_start;
-	return ((1000 * inf->time.tv_sec) + (inf->time.tv_usec / 1000));
-}
 
 void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 {
@@ -28,7 +19,7 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 	{
 		if (status == EAT)
 		{
-			monit->lst_eat = get_time(inf);
+			monit->lst_eat = get_time(inf->time_start);
 			if (inf->nb_eat)
 			{
 				if (++phi->nb_eat == inf->nb_eat)
@@ -37,7 +28,7 @@ void	print_status(t_inf *inf, t_phi *phi, t_monit *monit, int status)
 					inf->end = 1;
 			}
 		}
-		print(get_time(inf), phi->num + 1, status);
+		print(get_time(inf->time_start), phi->num + 1, status);
 	}
 	sem_post(inf->sem_monit);
 }
@@ -51,7 +42,7 @@ void	*monitoring(void *arg)
 	phi = arg;
 	inf = phi->inf;
 	monit = phi->monit;
-	monit->lst_eat = get_time(inf);
+	monit->lst_eat = get_time(inf->time_start);
 	while (1)
 	{
 		sem_wait(inf->sem_monit);
@@ -64,11 +55,11 @@ void	*monitoring(void *arg)
 			sem_post(inf->sem_monit);
 			return (NULL);
 		}
-		if ((get_time(inf) - monit->lst_eat >= inf->ms_die) && (inf->end = 1))
-			print(get_time(inf), phi->num + 1, DEAD);
+		if ((get_time(inf->time_start) - monit->lst_eat >=
+			(uint64_t)inf->ms_die) && (inf->end = 1))
+			print(get_time(inf->time_start), phi->num + 1, DEAD);
 		sem_post(inf->sem_monit);
 	}
-	return (NULL);
 }
 
 void	*routine(void *arg)
@@ -103,6 +94,7 @@ int		launch_all(t_inf *inf, t_phi *phi)
 {
 	int end;
 
+	inf->time_start = get_the_time();
 	while (phi)
 	{
 		if (pthread_create(&phi->thread, NULL, routine, phi))

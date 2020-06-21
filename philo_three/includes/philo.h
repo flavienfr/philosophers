@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 23:04:06 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 15:11:32 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <signal.h>
+# include <stdint.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -40,8 +41,7 @@ typedef struct	s_inf
 	int				ms_slp;
 	int				nb_eat;
 	int				time_eat;
-	struct timeval	time;
-	long			time_start;
+	uint64_t		time_start;
 	pid_t			*pid_tab;
 	sem_t			*sem_pick;
 	sem_t			*sem_monit;
@@ -53,7 +53,7 @@ typedef struct	s_inf
 typedef struct	s_monit
 {
 	pthread_t			thread;
-	int					lst_eat;
+	uint64_t			lst_eat;
 	struct s_monit		*next;
 }				t_monit;
 
@@ -89,5 +89,11 @@ int				launch_all(t_inf *inf, t_phi *phi);
 **	print.c
 */
 void			print(int time, int num, int status);
+
+/*
+**	other.c
+*/
+uint64_t		get_the_time(void);
+uint64_t		get_time(uint64_t time_start);
 
 #endif

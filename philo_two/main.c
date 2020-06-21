@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 10:47:13 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 22:16:25 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 15:00:40 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,6 @@ int		init_inf_fork(t_inf *inf)
 		return (1);
 	if (!(inf->sem_monit = sem_open("/sem_monit", O_CREAT, 0777, 1)))
 		return (1);
-	if (gettimeofday(&inf->time, NULL))
-		return (EXIT_FAILURE);
-	inf->time_start = inf->time.tv_sec;
 	if (!(inf->sem_fork = sem_open("/fork", O_CREAT, 0777, inf->nb_phi)))
 		return (1);
 	return (0);

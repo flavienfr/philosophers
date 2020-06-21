@@ -1,4 +1,4 @@
-SRCS = main.c philo.c print.c close.c utils.c
+SRCS = main.c philo.c print.c close.c utils.c other.c
 
 INC = -Iincludes/
 

@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 11:51:37 by froussel          #+#    #+#             */
-/*   Updated: 2020/06/20 22:15:59 by user42           ###   ########.fr       */
+/*   Updated: 2020/06/21 15:00:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <pthread.h>
 # include <semaphore.h>
 # include <fcntl.h>
+# include <stdint.h>
 
 # define EAT 1
 # define SLEEP 2
@@ -37,8 +38,7 @@ typedef struct	s_inf
 	int				time_eat;
 	int				end;
 	int				nb_fork;
-	struct timeval	time;
-	long			time_start;
+	uint64_t		time_start;
 	sem_t			*sem_pick;
 	sem_t			*sem_monit;
 	sem_t			*sem_fork;
@@ -49,7 +49,7 @@ typedef struct	s_inf
 typedef struct	s_monit
 {
 	pthread_t		thread;
-	int				lst_eat;
+	uint64_t		lst_eat;
 	struct s_monit	*next;
 }				t_monit;
 
@@ -81,5 +81,12 @@ int				launch_all(t_inf *inf, t_phi *phi);
 */
 void			print(int time, int num, int status);
 int				free_all(t_inf *inf, int ret);
+
+/*
+**	other.c
+*/
+
+uint64_t		get_the_time(void);
+uint64_t		get_time(uint64_t time_start);
 
 #endif
